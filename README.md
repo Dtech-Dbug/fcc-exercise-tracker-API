@@ -1,9 +1,5 @@
 # [Exercise Tracker](https://www.freecodecamp.org/learn/apis-and-microservices/apis-and-microservices-projects/exercise-tracker)
 
-<h2>Find the hosted link to Replit: [here](https://fcc-exercisetracker.dwaipayanchakro.repl.co) </h2>
-
-<h2>Find the Replit: [here](https://replit.com/@DwaipayanChakro/fcc-exercisetracker#server.js)</h2>
-
 ## Schema Design
 
 ```js
@@ -124,3 +120,9 @@ let logsSchema = new Schema({
   "__v": 0
 }
 ```
+
+---
+
+<h4>Find the hosted link to Replit:(https://fcc-exercisetracker.dwaipayanchakro.repl.co) </h4>
+
+<h4>Find the Replit:(https://replit.com/@DwaipayanChakro/fcc-exercisetracker#server.js)</h4>
