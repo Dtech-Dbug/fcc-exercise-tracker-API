@@ -96,8 +96,15 @@ app.post("/api/users/:id/exercises", async (req, res) => {
     duration,
     date: formattedDate,
   }).save();
-
-  res.json(saveExercise);
+  
+  // TODO: return user obj w/ exercise field added
+  res.status(200).json({
+    username,
+    _id: user._id,
+    description: saveExercise.description,
+    duration: saveExercise.duration,
+    date: saveExercise.date
+  })
 });
 
 //route to GET all exercises based on users
