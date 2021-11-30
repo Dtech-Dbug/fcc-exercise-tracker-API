@@ -27,12 +27,15 @@ let userSchema = Schema({
   username: String,
 });
 
+let UserModel = model("UserModel", userSchema);
+
 let exerciseSchema = new Schema({
   username: String,
   description: { type: String, required: true },
   duration: { type: Number, required: true },
   date: String,
 });
+let ExerciseModel = model("ExerciseModel", exerciseSchema);
 
 let logsSchema = new Schema({
   username: String,
@@ -47,8 +50,6 @@ let logsSchema = new Schema({
   ],
 });
 
-let UserModel = model("UserModel", userSchema);
-let ExerciseModel = model("ExerciseModel", exerciseSchema);
 let LogsModel = model("LogsModel", logsSchema);
 
 //first api route to save users
@@ -74,8 +75,7 @@ app.post("/api/users/:id/exercises", async (req, res) => {
   //get the id from params
   let userId = req.params.id;
 
-  let { description } = req.body;
-  let { duration } = req.body;
+  let { description, duration } = req.body;
 
   // grab date
   let { date } = req.body;
@@ -92,19 +92,23 @@ app.post("/api/users/:id/exercises", async (req, res) => {
   //save exercise log
   let saveExercise = await new ExerciseModel({
     username,
+
     description,
     duration,
     date: formattedDate,
   }).save();
-  
-  // TODO: return user obj w/ exercise field added
+
+  // res.json(user,{"jj" : "kk"})
   res.status(200).json({
     username,
     _id: user._id,
     description: saveExercise.description,
     duration: saveExercise.duration,
-    date: saveExercise.date
-  })
+    date: saveExercise.date,
+  });
+
+  console.log(saveExercise);
+  console.log("dur====", saveExercise.duration);
 });
 
 //route to GET all exercises based on users
@@ -121,19 +125,32 @@ app.get("/api/users/:id/exercises", async (req, res) => {
 });
 
 // logs /api/users/:_id/logs
-app.get("/api/users/:id/logs", async (req, res) => {
+app.get("/api/users/:id/logs?", async (req, res) => {
+  const { from, to, limit } = req.query;
+  console.log("Date formatted:", new Date(from).toDateString());
+
   // find user from id
   let userId = req.params.id;
 
   let user = await UserModel.findById({ _id: userId }).exec();
   let { username } = user;
   // find exercises of user from Exercise Model
-  let userExercises = await ExerciseModel.find({ username })
+  // query specific logs based on query params
+  let userExercises = await ExerciseModel.find({
+    username,
+    date: {
+      $gte: new Date(from).toDateString(),
+      $lt: new Date(to).toDateString(),
+    },
+  })
     .select({ _id: false })
+    .limit(limit)
     .exec();
 
   // store the count of exercises
   let count = userExercises.length;
+
+  // find logs between data
 
   // logs is an array of objects
   let logsArray = [];
